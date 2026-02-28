@@ -521,7 +521,12 @@ function startStudy() {
 function showCard() {
   const card = cards[currentIndex];
   isFlipped = false;
-  document.getElementById('card-inner').classList.remove('flipped');
+  const cardInner = document.getElementById('card-inner');
+  cardInner.style.transition = 'none';
+  cardInner.classList.remove('flipped');
+  cardInner.offsetHeight; // reflow で即時反映
+  cardInner.style.transition = '';
+  document.getElementById('flip-hint').textContent = 'タップして答えを見る';
   document.getElementById('flip-hint').style.display = '';
 
   const total = cards.length;
