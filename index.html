@@ -320,35 +320,16 @@
     </div>
   </div>
 
-  <div class="action-buttons hidden" id="action-buttons">
-    <button class="btn-wrong" onclick="answer(false)">❌ 知らなかった</button>
-    <button class="btn-correct" onclick="answer(true)">⭕ 知ってた</button>
-  </div>
-  <div class="flip-hint" id="flip-hint">カードをタップして答えを確認</div>
+  <div class="flip-hint" id="flip-hint">タップして答えを見る</div>
   <button class="btn-back" style="margin-top:16px; width:100%;" onclick="goSelect()">← メニューに戻る</button>
 </div>
 
 <!-- 結果画面 -->
 <div id="screen-result" class="screen">
-  <div class="result-title" id="result-title"></div>
-  <div class="result-circle">
-    <div class="score" id="result-score"></div>
-    <div>正解率</div>
-  </div>
-  <div class="result-stats">
-    <div class="stat-box correct">
-      <div class="stat-num" id="result-correct"></div>
-      <div class="stat-label">⭕ 知ってた</div>
-    </div>
-    <div class="stat-box wrong">
-      <div class="stat-num" id="result-wrong"></div>
-      <div class="stat-label">❌ 知らなかった</div>
-    </div>
-  </div>
+  <div class="result-title">お疲れ様でした！</div>
   <div class="result-buttons">
-    <button class="btn-retry" onclick="retryAll()">もう一度（全部）</button>
-    <button class="btn-retry-wrong" id="btn-retry-wrong" onclick="retryWrong()">❌ 間違えた単語だけ</button>
-    <button class="btn-back" onclick="goSelect()">← 課選択に戻る</button>
+    <button class="btn-retry" onclick="retryAll()">もう一度</button>
+    <button class="btn-back" style="margin-top:12px;" onclick="goSelect()">← 課選択に戻る</button>
   </div>
 </div>
 
@@ -520,7 +501,7 @@ function selectLesson(lesson) {
 }
 
 // ===== 学習ロジック =====
-let cards = [], currentIndex = 0, correctCount = 0, wrongCards = [], isFlipped = false;
+let cards = [], currentIndex = 0, isFlipped = false;
 
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
@@ -530,15 +511,9 @@ function shuffle(arr) {
   return arr;
 }
 
-function startStudy(fromWrong = false) {
-  if (fromWrong) {
-    cards = shuffle([...wrongCards]);
-  } else {
-    cards = shuffle(VOCAB.filter(v => selectedLessons.has(v.lesson)));
-  }
+function startStudy() {
+  cards = shuffle(VOCAB.filter(v => selectedLessons.has(v.lesson)));
   currentIndex = 0;
-  correctCount = 0;
-  wrongCards = [];
   showScreen('screen-card');
   showCard();
 }
@@ -547,7 +522,6 @@ function showCard() {
   const card = cards[currentIndex];
   isFlipped = false;
   document.getElementById('card-inner').classList.remove('flipped');
-  document.getElementById('action-buttons').classList.add('hidden');
   document.getElementById('flip-hint').style.display = '';
 
   const total = cards.length;
@@ -567,41 +541,21 @@ function showCard() {
 }
 
 function flipCard() {
-  if (isFlipped) return;
-  isFlipped = true;
-  document.getElementById('card-inner').classList.add('flipped');
-  document.getElementById('action-buttons').classList.remove('hidden');
-  document.getElementById('flip-hint').style.display = 'none';
-}
-
-function answer(correct) {
-  if (correct) {
-    correctCount++;
+  if (!isFlipped) {
+    isFlipped = true;
+    document.getElementById('card-inner').classList.add('flipped');
+    document.getElementById('flip-hint').textContent = 'タップして次へ';
   } else {
-    wrongCards.push(cards[currentIndex]);
-  }
-  currentIndex++;
-  if (currentIndex >= cards.length) {
-    showResult();
-  } else {
-    showCard();
+    currentIndex++;
+    if (currentIndex >= cards.length) {
+      showScreen('screen-result');
+    } else {
+      showCard();
+    }
   }
 }
 
-function showResult() {
-  const total = cards.length;
-  const pct = Math.round(correctCount / total * 100);
-  const titles = pct === 100 ? '🎉 パーフェクト！' : pct >= 80 ? '😊 よくできました！' : pct >= 50 ? '😐 もう少し！' : '😅 頑張ろう！';
-  document.getElementById('result-title').textContent = titles;
-  document.getElementById('result-score').textContent = pct + '%';
-  document.getElementById('result-correct').textContent = correctCount;
-  document.getElementById('result-wrong').textContent = wrongCards.length;
-  document.getElementById('btn-retry-wrong').style.display = wrongCards.length > 0 ? '' : 'none';
-  showScreen('screen-result');
-}
-
-function retryAll() { startStudy(false); }
-function retryWrong() { startStudy(true); }
+function retryAll() { startStudy(); }
 function goSelect() { showScreen('screen-select'); }
 
 function showScreen(id) {
