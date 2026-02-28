@@ -30,20 +30,6 @@
   .screen.active { display: block; }
 
   /* ===== 課選択画面 ===== */
-  .select-all-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 12px;
-  }
-  .btn-text {
-    background: none;
-    border: none;
-    color: #2b6cb0;
-    font-size: 14px;
-    cursor: pointer;
-    padding: 4px 0;
-    text-decoration: underline;
-  }
   .lesson-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -73,26 +59,6 @@
     font-weight: normal;
     margin-top: 2px;
     opacity: 0.7;
-  }
-  .start-btn {
-    width: 100%;
-    padding: 16px;
-    background: #2b6cb0;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .start-btn:hover { background: #2c5282; }
-  .start-btn:disabled { background: #a0aec0; cursor: not-allowed; }
-  .selected-info {
-    text-align: center;
-    color: #718096;
-    font-size: 14px;
-    margin-bottom: 16px;
   }
 
   /* ===== フラッシュカード画面 ===== */
@@ -326,13 +292,7 @@
 
 <!-- 課選択画面 -->
 <div id="screen-select" class="screen active">
-  <div class="select-all-row">
-    <button class="btn-text" onclick="selectAll()">すべて選択</button>
-    <button class="btn-text" onclick="clearAll()">すべて解除</button>
-  </div>
   <div class="lesson-grid" id="lesson-grid"></div>
-  <div class="selected-info" id="selected-info">課を選んでください</div>
-  <button class="start-btn" id="start-btn" onclick="startStudy()" disabled>学習スタート</button>
 </div>
 
 <!-- フラッシュカード画面 -->
@@ -548,47 +508,15 @@ lessons.forEach(lesson => {
   btn.className = 'lesson-btn';
   const label = lesson === 'L00' ? '基礎' : lesson.replace('L', '第') + '課';
   btn.innerHTML = `${label}<span class="count">${lessonCounts[lesson]}語</span>`;
-  btn.onclick = () => toggleLesson(lesson, btn);
+  btn.onclick = () => selectLesson(lesson);
   btn.dataset.lesson = lesson;
   grid.appendChild(btn);
 });
 
-function toggleLesson(lesson, btn) {
-  if (selectedLessons.has(lesson)) {
-    selectedLessons.delete(lesson);
-    btn.classList.remove('selected');
-  } else {
-    selectedLessons.add(lesson);
-    btn.classList.add('selected');
-  }
-  updateSelectedInfo();
-}
-
-function selectAll() {
-  lessons.forEach(lesson => {
-    selectedLessons.add(lesson);
-    document.querySelector(`[data-lesson="${lesson}"]`).classList.add('selected');
-  });
-  updateSelectedInfo();
-}
-
-function clearAll() {
+function selectLesson(lesson) {
   selectedLessons.clear();
-  document.querySelectorAll('.lesson-btn').forEach(b => b.classList.remove('selected'));
-  updateSelectedInfo();
-}
-
-function updateSelectedInfo() {
-  const total = [...selectedLessons].reduce((s, l) => s + lessonCounts[l], 0);
-  const info = document.getElementById('selected-info');
-  const startBtn = document.getElementById('start-btn');
-  if (selectedLessons.size === 0) {
-    info.textContent = '課を選んでください';
-    startBtn.disabled = true;
-  } else {
-    info.textContent = `${selectedLessons.size}課 / ${total}語 を選択中`;
-    startBtn.disabled = false;
-  }
+  selectedLessons.add(lesson);
+  startStudy(false);
 }
 
 // ===== 学習ロジック =====
