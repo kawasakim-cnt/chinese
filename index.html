@@ -167,6 +167,22 @@
     line-height: 1.5;
   }
 
+  /* ===== 音声ボタン ===== */
+  .btn-speak {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.15s;
+    padding: 4px 12px;
+  }
+  .btn-speak:active { opacity: 1; }
+
   /* ===== ボタン群 ===== */
   .action-buttons {
     display: flex;
@@ -309,6 +325,7 @@
         <span class="card-lesson-badge" id="card-lesson"></span>
         <div class="card-chinese" id="card-chinese"></div>
         <div class="card-hint">タップして答えを見る</div>
+        <button class="btn-speak" onclick="event.stopPropagation(); speak()">🔊</button>
       </div>
       <div class="card-face card-back">
         <span class="card-lesson-badge" id="card-lesson-back"></span>
@@ -316,6 +333,7 @@
         <div class="card-pinyin" id="card-pinyin"></div>
         <div class="card-ja" id="card-ja"></div>
         <div class="card-pos-badge" id="card-pos-back"></div>
+        <button class="btn-speak" onclick="event.stopPropagation(); speak()">🔊</button>
       </div>
     </div>
   </div>
@@ -558,6 +576,14 @@ function flipCard() {
       showCard();
     }
   }
+}
+
+function speak() {
+  const text = cards[currentIndex].trad;
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'zh-TW';
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utter);
 }
 
 function retryAll() { startStudy(); }
