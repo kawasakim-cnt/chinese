@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
 <title>時代華語① フラッシュカード</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -165,6 +167,26 @@
     color: #2d3748;
     text-align: center;
     line-height: 1.5;
+  }
+  .card-example {
+    margin-top: 10px;
+    padding: 8px 10px 0;
+    border-top: 1px solid #e2e8f0;
+    text-align: left;
+    line-height: 1.6;
+    width: 100%;
+  }
+  .ex-zh {
+    font-size: 18px;
+    color: #2d3748;
+  }
+  .ex-py {
+    font-size: 15px;
+    color: #718096;
+  }
+  .ex-ja {
+    font-size: 15px;
+    color: #718096;
   }
 
   /* ===== 音声ボタン ===== */
@@ -331,6 +353,7 @@
         <div class="card-chinese" style="font-size:52px; margin-bottom:8px;" id="card-chinese-back"></div>
         <div class="card-pinyin" id="card-pinyin"></div>
         <div class="card-ja" id="card-ja"></div>
+        <div class="card-example" id="card-example"></div>
         <div class="card-pos-badge" id="card-pos-back"></div>
         <button class="btn-speak" onclick="event.stopPropagation(); speak()">🔊</button>
       </div>
@@ -356,16 +379,16 @@ const VOCAB =
   {"lesson": "L00", "trad": "三", "pinyin": "sān", "pos": "N", "ja": "三つ"}, {"lesson": "L00", "trad": "四", "pinyin": "sì", "pos": "N", "ja": "4"}, {"lesson": "L00", "trad": "五", "pinyin": "wǔ", "pos": "N", "ja": "五"}, {"lesson": "L00", "trad": "六", "pinyin": "liù", "pos": "N", "ja": "六"}, {"lesson": "L00", "trad": "七", "pinyin": "qī", "pos": "N", "ja": "セブン"},
   {"lesson": "L00", "trad": "八", "pinyin": "bā", "pos": "N", "ja": "八"}, {"lesson": "L00", "trad": "九", "pinyin": "jiǔ", "pos": "N", "ja": "九"}, {"lesson": "L00", "trad": "十", "pinyin": "shí", "pos": "N", "ja": "10"}, {"lesson": "L00", "trad": "一", "pinyin": "yī", "pos": "N", "ja": "1つ"}, {"lesson": "L00", "trad": "二", "pinyin": "èr", "pos": "N", "ja": "二"},
   {"lesson": "L00", "trad": "你", "pinyin": "nǐ", "pos": "N", "ja": "あなた"}, {"lesson": "L00", "trad": "我", "pinyin": "wǒ", "pos": "N", "ja": "私;自分"}, {"lesson": "L00", "trad": "我們", "pinyin": "wǒmen", "pos": "N", "ja": "私たちは;私たち"}, {"lesson": "L00", "trad": "你們", "pinyin": "nǐmen", "pos": "N", "ja": "あなた（複数）"}, {"lesson": "L00", "trad": "他", "pinyin": "tā", "pos": "N", "ja": "彼;彼"},
-  {"lesson": "L00", "trad": "他們", "pinyin": "tāmen", "pos": "N", "ja": "彼らは;彼ら"}, {"lesson": "L00", "trad": "太太", "pinyin": "tàitai", "pos": "N", "ja": "MS。;妻"}, {"lesson": "L00", "trad": "先生", "pinyin": "xiānshēng", "pos": "N", "ja": "氏。;夫"}, {"lesson": "L00", "trad": "小姐", "pinyin": "xiǎojiě", "pos": "N", "ja": "逃す"}, {"lesson": "L00", "trad": "是", "pinyin": "shì", "pos": "Vst", "ja": "なる"},
-  {"lesson": "L00", "trad": "老師", "pinyin": "lǎoshī", "pos": "N", "ja": "教師"}, {"lesson": "L00", "trad": "學生", "pinyin": "xuéshēng", "pos": "N", "ja": "学生"}, {"lesson": "L00", "trad": "不", "pinyin": "bù/bú", "pos": "Adv", "ja": "ない"}, {"lesson": "L01", "trad": "新", "pinyin": "xīn", "pos": "Vs", "ja": "新しい"}, {"lesson": "L01", "trad": "同學", "pinyin": "tóngxué", "pos": "N", "ja": "同級生"},
-  {"lesson": "L01", "trad": "她", "pinyin": "tā", "pos": "N", "ja": "彼女;彼女"}, {"lesson": "L01", "trad": "誰", "pinyin": "shéi", "pos": "N", "ja": "誰が"}, {"lesson": "L01", "trad": "叫", "pinyin": "jiào", "pos": "Vst", "ja": "呼ばれる"}, {"lesson": "L01", "trad": "姓", "pinyin": "xìng", "pos": "Vst", "ja": "姓を名乗られる"}, {"lesson": "L01", "trad": "很", "pinyin": "hěn", "pos": "Adv", "ja": "とても"},
-  {"lesson": "L01", "trad": "可愛", "pinyin": "kěài", "pos": "Vs", "ja": "素敵な;かわいい"}, {"lesson": "L01", "trad": "哪", "pinyin": "nǎ/něi", "pos": "Det", "ja": "どれの"}, {"lesson": "L01", "trad": "國", "pinyin": "guó", "pos": "N", "ja": "国"}, {"lesson": "L01", "trad": "妳", "pinyin": "nǐ", "pos": "N", "ja": "あなた（女性）"}, {"lesson": "L01", "trad": "知道", "pinyin": "zhīdào", "pos": "Vst", "ja": "知ること"},
-  {"lesson": "L01", "trad": "嗎", "pinyin": "ma", "pos": "Ptc", "ja": "はい/いいえ質問の文末助詞"}, {"lesson": "L01", "trad": "日本", "pinyin": "Rìběn", "pos": "N", "ja": "日本"}, {"lesson": "L01", "trad": "臺灣", "pinyin": "Táiwān", "pos": "N", "ja": "台湾"}, {"lesson": "L01", "trad": "中國", "pinyin": "Zhōngguó", "pos": "N", "ja": "中国"}, {"lesson": "L01", "trad": "美國", "pinyin": "Měiguó", "pos": "N", "ja": "アメリカ"},
-  {"lesson": "L01", "trad": "英國", "pinyin": "Yīngguó", "pos": "N", "ja": "イギリス"}, {"lesson": "L01", "trad": "漂亮", "pinyin": "piàoliang", "pos": "Vs", "ja": "かわいい;美しい"}, {"lesson": "L01", "trad": "呢", "pinyin": "ne", "pos": "Ptc", "ja": "はい/いいえ質問の文末助詞"}, {"lesson": "L01", "trad": "你好", "pinyin": "nǐ hǎo", "pos": "Phrase", "ja": "こんにちは"}, {"lesson": "L01", "trad": "好", "pinyin": "hǎo", "pos": "Vs", "ja": "大丈夫;良い;良い;ニース;わかりました"},
-  {"lesson": "L01", "trad": "朋友", "pinyin": "péngyou", "pos": "N", "ja": "友人"}, {"lesson": "L01", "trad": "人", "pinyin": "rén", "pos": "N", "ja": "人;人々"}, {"lesson": "L01", "trad": "號碼", "pinyin": "hàomǎ", "pos": "N", "ja": "番号"}, {"lesson": "L01", "trad": "名字", "pinyin": "míngzi", "pos": "N", "ja": "ファーストネーム;フルネーム"}, {"lesson": "L01", "trad": "姓名", "pinyin": "xìngmíng", "pos": "N", "ja": "姓と名（フルネーム）"},
-  {"lesson": "L01", "trad": "謝謝", "pinyin": "xièxie", "pos": "Vst", "ja": "感謝する"}, {"lesson": "L01", "trad": "喜歡", "pinyin": "xǐhuān", "pos": "Vst", "ja": "好きになる"}, {"lesson": "L01", "trad": "請問", "pinyin": "qǐngwèn", "pos": "Phrase", "ja": "聞いてもいいですか...;すみません。"}, {"lesson": "L01", "trad": "不客氣", "pinyin": "bú kèqi", "pos": "Phrase", "ja": "どういたしまして。"}, {"lesson": "L01", "trad": "奶茶", "pinyin": "nǎichá", "pos": "N", "ja": "ミルクティー"},
-  {"lesson": "L01", "trad": "喝", "pinyin": "hē", "pos": "V", "ja": "飲む"}, {"lesson": "L01", "trad": "水", "pinyin": "shuǐ", "pos": "N", "ja": "水"}, {"lesson": "L01", "trad": "水果", "pinyin": "shuǐguǒ", "pos": "N", "ja": "フルーツ"}, {"lesson": "L01", "trad": "自我介紹", "pinyin": "zìwǒ jièshào", "pos": "N", "ja": "自己紹介"}, {"lesson": "L01", "trad": "珍珠奶茶", "pinyin": "zhēnzhū nǎichá", "pos": "N", "ja": "バブルミルクティー"},
-  {"lesson": "L01", "trad": "愛", "pinyin": "ài", "pos": "Vst", "ja": "愛すること"}, {"lesson": "L02", "trad": "啊", "pinyin": "ā", "pos": "Ptc", "ja": "ああ、驚きを表す間投詞"}, {"lesson": "L02", "trad": "啊", "pinyin": "ā", "pos": "Ptc", "ja": "フレーズ終助詞、肯定を示す"}, {"lesson": "L02", "trad": "爸爸", "pinyin": "bàba", "pos": "N", "ja": "お父さん"}, {"lesson": "L02", "trad": "媽媽", "pinyin": "māma", "pos": "N", "ja": "お母さん"},
+  {"lesson": "L00", "trad": "他們", "pinyin": "tāmen", "pos": "N", "ja": "彼らは;彼ら"}, {"lesson": "L00", "trad": "太太", "pinyin": "tàitai", "pos": "N", "ja": "奥さん;妻"}, {"lesson": "L00", "trad": "先生", "pinyin": "xiānshēng", "pos": "N", "ja": "〜さん（男性）;夫", "ex_zh": "李先生是美國人，李太太是英國人。", "ex_py": "Lǐ xiānshēng shì Měiguó rén, Lǐ tàitai shì Yīngguó rén.", "ex_ja": "李さんはアメリカ人、李さんの奥様はイギリス人です。"}, {"lesson": "L00", "trad": "小姐", "pinyin": "xiǎojiě", "pos": "N", "ja": "〜さん（未婚女性）"}, {"lesson": "L00", "trad": "是", "pinyin": "shì", "pos": "Vst", "ja": "〜である", "ex_zh": "我是老師，他是學生。", "ex_py": "Wǒ shì lǎoshī, tā shì xuéshēng.", "ex_ja": "私は先生、彼は学生です。"},
+  {"lesson": "L00", "trad": "老師", "pinyin": "lǎoshī", "pos": "N", "ja": "教師"}, {"lesson": "L00", "trad": "學生", "pinyin": "xuéshēng", "pos": "N", "ja": "学生"}, {"lesson": "L00", "trad": "不", "pinyin": "bù/bú", "pos": "Adv", "ja": "〜でない", "ex_zh": "他不是日本人，他是台灣人。", "ex_py": "Tā bú shì Rìběn rén, tā shì Táiwān rén.", "ex_ja": "彼は日本人ではなく台湾人です。"}, {"lesson": "L01", "trad": "新", "pinyin": "xīn", "pos": "Vs", "ja": "新しい"}, {"lesson": "L01", "trad": "同學", "pinyin": "tóngxué", "pos": "N", "ja": "クラスメート", "ex_zh": "他是新同學。", "ex_py": "Tā shì xīn tóngxué.", "ex_ja": "彼は新しいクラスメートです。"},
+  {"lesson": "L01", "trad": "她", "pinyin": "tā", "pos": "N", "ja": "彼女"}, {"lesson": "L01", "trad": "誰", "pinyin": "shéi", "pos": "N", "ja": "誰", "ex_zh": "她是誰？", "ex_py": "Tā shì shéi?", "ex_ja": "彼女は誰ですか？"}, {"lesson": "L01", "trad": "叫", "pinyin": "jiào", "pos": "Vst", "ja": "〜という名前である", "ex_zh": "我叫王宜文。", "ex_py": "Wǒ jiào Wáng Yíwén.", "ex_ja": "私は王宜文といいます。"}, {"lesson": "L01", "trad": "姓", "pinyin": "xìng", "pos": "Vst", "ja": "〜という姓である", "ex_zh": "我姓王，叫宜文。", "ex_py": "Wǒ xìng Wáng, jiào Yíwén.", "ex_ja": "私の姓は王、名は宜文です。"}, {"lesson": "L01", "trad": "很", "pinyin": "hěn", "pos": "Adv", "ja": "とても"},
+  {"lesson": "L01", "trad": "可愛", "pinyin": "kěài", "pos": "Vs", "ja": "かわいい", "ex_zh": "新同學很可愛。", "ex_py": "Xīn tóngxué hěn kěài.", "ex_ja": "新しいクラスメートはかわいいです。"}, {"lesson": "L01", "trad": "哪", "pinyin": "nǎ/něi", "pos": "Det", "ja": "どの"}, {"lesson": "L01", "trad": "國", "pinyin": "guó", "pos": "N", "ja": "国", "ex_zh": "他是哪國人？", "ex_py": "Tā shì nǎ guó rén?", "ex_ja": "彼はどの国の人ですか？"}, {"lesson": "L01", "trad": "妳", "pinyin": "nǐ", "pos": "N", "ja": "あなた（女性）"}, {"lesson": "L01", "trad": "知道", "pinyin": "zhīdào", "pos": "Vst", "ja": "知っている"},
+  {"lesson": "L01", "trad": "嗎", "pinyin": "ma", "pos": "Ptc", "ja": "〜か（yes/no疑問文の文末助詞）", "ex_zh": "他是誰？妳知道嗎？", "ex_py": "Tā shì shéi? Nǐ zhīdào ma?", "ex_ja": "彼は誰ですか？知っていますか？"}, {"lesson": "L01", "trad": "日本", "pinyin": "Rìběn", "pos": "N", "ja": "日本"}, {"lesson": "L01", "trad": "臺灣", "pinyin": "Táiwān", "pos": "N", "ja": "台湾"}, {"lesson": "L01", "trad": "中國", "pinyin": "Zhōngguó", "pos": "N", "ja": "中国"}, {"lesson": "L01", "trad": "美國", "pinyin": "Měiguó", "pos": "N", "ja": "アメリカ", "ex_zh": "A：他是哪國人？B：他是美國人。", "ex_py": "A：Tā shì nǎ guó rén? B：Tā shì Měiguó rén.", "ex_ja": "A：彼はどの国の人？B：アメリカ人です。"},
+  {"lesson": "L01", "trad": "英國", "pinyin": "Yīngguó", "pos": "N", "ja": "イギリス"}, {"lesson": "L01", "trad": "漂亮", "pinyin": "piàoliang", "pos": "Vs", "ja": "きれい;美しい", "ex_zh": "她很漂亮。", "ex_py": "Tā hěn piàoliang.", "ex_ja": "彼女はとてもきれいです。"}, {"lesson": "L01", "trad": "呢", "pinyin": "ne", "pos": "Ptc", "ja": "〜は？（省略疑問文の文末助詞）", "ex_zh": "我是臺灣人，你呢？", "ex_py": "Wǒ shì Táiwān rén, nǐ ne?", "ex_ja": "私は台湾人です。あなたは？"}, {"lesson": "L01", "trad": "你好", "pinyin": "nǐ hǎo", "pos": "Phrase", "ja": "こんにちは"}, {"lesson": "L01", "trad": "好", "pinyin": "hǎo", "pos": "Vs", "ja": "良い;大丈夫", "ex_zh": "A：你好嗎？B：我很好。", "ex_py": "A：Nǐ hǎo ma? B：Wǒ hěn hǎo.", "ex_ja": "A：お元気ですか？B：元気です。"},
+  {"lesson": "L01", "trad": "朋友", "pinyin": "péngyou", "pos": "N", "ja": "友達"}, {"lesson": "L01", "trad": "人", "pinyin": "rén", "pos": "N", "ja": "人"}, {"lesson": "L01", "trad": "號碼", "pinyin": "hàomǎ", "pos": "N", "ja": "番号"}, {"lesson": "L01", "trad": "名字", "pinyin": "míngzi", "pos": "N", "ja": "名前（名のみ／フルネーム）", "ex_zh": "他叫什麼名字？你知道嗎？", "ex_py": "Tā jiào shénme míngzi? Nǐ zhīdào ma?", "ex_ja": "彼の名前は何ですか？知っていますか？"}, {"lesson": "L01", "trad": "姓名", "pinyin": "xìngmíng", "pos": "N", "ja": "姓名（フルネーム）"},
+  {"lesson": "L01", "trad": "謝謝", "pinyin": "xièxie", "pos": "Vst", "ja": "ありがとう", "ex_zh": "A：謝謝你。B：不客氣。", "ex_py": "A：Xièxie nǐ. B：Bú kèqi.", "ex_ja": "A：ありがとう。B：どういたしまして。"}, {"lesson": "L01", "trad": "喜歡", "pinyin": "xǐhuān", "pos": "Vst", "ja": "好きである", "ex_zh": "A：你喜歡臺灣嗎？B：我喜歡臺灣。", "ex_py": "A：Nǐ xǐhuān Táiwān ma? B：Wǒ xǐhuān Táiwān.", "ex_ja": "A：台湾は好きですか？B：好きです。"}, {"lesson": "L01", "trad": "請問", "pinyin": "qǐngwèn", "pos": "Phrase", "ja": "すみません…；〜してもいいですか", "ex_zh": "請問你是臺灣人嗎？", "ex_py": "Qǐngwèn nǐ shì Táiwān rén ma?", "ex_ja": "すみません、台湾人ですか？"}, {"lesson": "L01", "trad": "不客氣", "pinyin": "bú kèqi", "pos": "Phrase", "ja": "どういたしまして"}, {"lesson": "L01", "trad": "奶茶", "pinyin": "nǎichá", "pos": "N", "ja": "ミルクティー"},
+  {"lesson": "L01", "trad": "喝", "pinyin": "hē", "pos": "V", "ja": "飲む", "ex_zh": "我喜歡喝茶。", "ex_py": "Wǒ xǐhuān hē chá.", "ex_ja": "お茶を飲むのが好きです。"}, {"lesson": "L01", "trad": "水", "pinyin": "shuǐ", "pos": "N", "ja": "水"}, {"lesson": "L01", "trad": "水果", "pinyin": "shuǐguǒ", "pos": "N", "ja": "果物", "ex_zh": "我愛吃水果。", "ex_py": "Wǒ ài chī shuǐguǒ.", "ex_ja": "果物を食べるのが大好きです。"}, {"lesson": "L01", "trad": "自我介紹", "pinyin": "zìwǒ jièshào", "pos": "N", "ja": "自己紹介"}, {"lesson": "L01", "trad": "珍珠奶茶", "pinyin": "zhēnzhū nǎichá", "pos": "N", "ja": "タピオカミルクティー"},
+  {"lesson": "L01", "trad": "愛", "pinyin": "ài", "pos": "Vst", "ja": "愛する", "ex_zh": "我愛你。", "ex_py": "Wǒ ài nǐ.", "ex_ja": "あなたを愛しています。"}, {"lesson": "L02", "trad": "啊", "pinyin": "ā", "pos": "Ptc", "ja": "ああ、驚きを表す間投詞"}, {"lesson": "L02", "trad": "啊", "pinyin": "ā", "pos": "Ptc", "ja": "フレーズ終助詞、肯定を示す"}, {"lesson": "L02", "trad": "爸爸", "pinyin": "bàba", "pos": "N", "ja": "お父さん"}, {"lesson": "L02", "trad": "媽媽", "pinyin": "māma", "pos": "N", "ja": "お母さん"},
   {"lesson": "L02", "trad": "家人", "pinyin": "jiārén", "pos": "N", "ja": "家族"}, {"lesson": "L02", "trad": "家", "pinyin": "jiā", "pos": "N", "ja": "家;家"}, {"lesson": "L02", "trad": "回", "pinyin": "huí", "pos": "V", "ja": "戻る"}, {"lesson": "L02", "trad": "來", "pinyin": "lái", "pos": "V", "ja": "来る"}, {"lesson": "L02", "trad": "晚飯", "pinyin": "wǎnfàn", "pos": "N", "ja": "夕食"},
   {"lesson": "L02", "trad": "晚上", "pinyin": "wǎnshàng", "pos": "N", "ja": "夕方;夜"}, {"lesson": "L02", "trad": "午飯", "pinyin": "wǔfàn", "pos": "N", "ja": "ランチ"}, {"lesson": "L02", "trad": "早飯", "pinyin": "zǎofàn", "pos": "N", "ja": "朝食"}, {"lesson": "L02", "trad": "早上", "pinyin": "zǎoshàng", "pos": "N", "ja": "朝"}, {"lesson": "L02", "trad": "生日", "pinyin": "shēngrì", "pos": "N", "ja": "誕生日"},
   {"lesson": "L02", "trad": "今天", "pinyin": "jīntiān", "pos": "N", "ja": "今日"}, {"lesson": "L02", "trad": "明天", "pinyin": "míngtiān", "pos": "N", "ja": "明日"}, {"lesson": "L02", "trad": "明天見", "pinyin": "Míngtiān jiàn", "pos": "Phrase", "ja": "また明日ね。"}, {"lesson": "L02", "trad": "再見", "pinyin": "Zàijiàn", "pos": "Phrase", "ja": "さようなら。"}, {"lesson": "L02", "trad": "昨天", "pinyin": "zuótiān", "pos": "N", "ja": "昨日"},
@@ -552,7 +575,6 @@ function showCard() {
   document.getElementById('progress-text').textContent = `${done + 1} / ${total}`;
 
   const lessonLabel = card.lesson === 'L00' ? '基礎' : card.lesson.replace('L', '第') + '課';
-  document.getElementById('card-pos').textContent = card.pos;
   document.getElementById('card-lesson').textContent = lessonLabel;
   document.getElementById('card-chinese').textContent = card.trad;
   document.getElementById('card-pos-back').textContent = card.pos;
@@ -560,6 +582,19 @@ function showCard() {
   document.getElementById('card-chinese-back').textContent = card.trad;
   document.getElementById('card-pinyin').textContent = card.pinyin;
   document.getElementById('card-ja').textContent = card.ja;
+  const exEl = document.getElementById('card-example');
+  if (card.ex_zh) {
+    exEl.innerHTML =
+      `<div class="ex-zh">${card.ex_zh}</div>` +
+      `<div class="ex-py">${card.ex_py}</div>` +
+      `<div class="ex-ja">${card.ex_ja}</div>`;
+    exEl.style.display = 'block';
+  } else {
+    exEl.innerHTML = '';
+    exEl.style.display = 'none';
+  }
+  const container = document.querySelector('.card-container');
+  container.style.height = card.ex_zh ? '440px' : '300px';
   speak();
 }
 
@@ -582,6 +617,7 @@ function speak() {
   const text = cards[currentIndex].trad;
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = 'zh-TW';
+  utter.rate = 0.9;
   speechSynthesis.cancel();
   speechSynthesis.speak(utter);
 }
