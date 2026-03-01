@@ -617,7 +617,7 @@ function speak() {
   const text = cards[currentIndex].trad;
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = 'zh-TW';
-  utter.rate = 0.9;
+  utter.rate = 0.8;
   speechSynthesis.cancel();
   speechSynthesis.speak(utter);
 }
