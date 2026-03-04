@@ -603,6 +603,14 @@ function flipCard() {
     isFlipped = true;
     document.getElementById('card-inner').classList.add('flipped');
     document.getElementById('flip-hint').textContent = 'タップして次へ';
+    const card = cards[currentIndex];
+    if (card.ex_zh) {
+      const utter = new SpeechSynthesisUtterance(card.ex_zh);
+      utter.lang = 'zh-TW';
+      utter.rate = 0.8;
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utter);
+    }
   } else {
     currentIndex++;
     if (currentIndex >= cards.length) {
