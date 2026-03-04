@@ -322,24 +322,6 @@
     font-weight: bold;
     margin-top: 8px;
   }
-  .data-section {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-  }
-  .btn-export, .btn-import {
-    flex: 1;
-    padding: 12px;
-    border-radius: 10px;
-    font-size: 14px;
-    cursor: pointer;
-    text-align: center;
-    border: 2px solid #e2e8f0;
-    background: white;
-    color: #4a5568;
-    display: block;
-  }
-  .btn-import-custom { display: none; }
 </style>
 </head>
 <body>
@@ -349,12 +331,6 @@
 <!-- 課選択画面 -->
 <div id="screen-select" class="screen active">
   <div class="lesson-grid" id="lesson-grid"></div>
-  <div class="data-section">
-    <button class="btn-export" onclick="exportCSV()">⬇ CSV出力</button>
-    <label class="btn-import">⬆ CSV読込
-      <input class="btn-import-custom" type="file" accept=".csv" onchange="importCSV(event)">
-    </label>
-  </div>
 </div>
 
 <!-- フラッシュカード画面 -->
@@ -537,15 +513,6 @@ const VOCAB =
   {"lesson": "L16", "trad": "換", "pinyin": "huàn", "pos": "V", "ja": "変える", "ex_zh": "我想先換衣服再去運動。", "ex_py": "Wǒ xiǎng xiān huàn yīfú zài qù yùndòng.", "ex_ja": "まず着替えてからスポーツをしたいです。"}, {"lesson": "L16", "trad": "付", "pinyin": "fù", "pos": "V", "ja": "支払う", "ex_zh": "你先幫我付，我明天再給你錢。", "ex_py": "Nǐ xiān bāng wǒ fù, wǒ míngtiān zài gěi nǐ qián.", "ex_ja": "まず私の分を払ってください。明日お金を返します。"}, {"lesson": "L16", "trad": "搭", "pinyin": "dā", "pos": "V", "ja": "取る;によって旅行する", "ex_zh": "聽說高鐵很快，你搭過沒有？", "ex_py": "Tīngshuō gāotiě hěn kuài, nǐ dā guò méi yǒu?", "ex_ja": "高速鉄道はとても速いと聞きましたが、乗ったことはありますか？"}
 ];
 
-// localStorageにカスタムデータがあれば適用
-const savedVocab = localStorage.getItem('vocab_custom');
-if (savedVocab) {
-  try {
-    const data = JSON.parse(savedVocab);
-    VOCAB.splice(0, VOCAB.length, ...data);
-  } catch(e) { console.warn('vocab_custom の読み込みに失敗:', e); }
-}
-
 // 課ごとの単語数を集計
 const lessonCounts = {};
 VOCAB.forEach(v => {
@@ -675,80 +642,6 @@ function speakExample() {
 
 function retryAll() { startStudy(); }
 function goSelect() { showScreen('screen-select'); }
-
-// ===== CSV エクスポート / インポート =====
-function exportCSV() {
-  const headers = ['lesson','trad','pinyin','pos','ja','ex_zh','ex_py','ex_ja'];
-  const rows = VOCAB.map(v =>
-    headers.map(h => '"' + (v[h] || '').replace(/"/g, '""') + '"').join(',')
-  );
-  const csv = '\uFEFF' + headers.join(',') + '\n' + rows.join('\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'vocab.csv';
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function parseCSVLine(line) {
-  const result = [];
-  let current = '', inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    if (line[i] === '"') {
-      if (inQuotes && line[i+1] === '"') { current += '"'; i++; }
-      else inQuotes = !inQuotes;
-    } else if (line[i] === ',' && !inQuotes) {
-      result.push(current); current = '';
-    } else {
-      current += line[i];
-    }
-  }
-  result.push(current);
-  return result;
-}
-
-function importCSV(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const text = e.target.result.replace(/^\uFEFF/, '');
-    const lines = text.split(/\r?\n/);
-    const headers = parseCSVLine(lines[0]);
-    const data = [];
-    for (let i = 1; i < lines.length; i++) {
-      if (!lines[i].trim()) continue;
-      const values = parseCSVLine(lines[i]);
-      const obj = {};
-      headers.forEach((h, idx) => { if (values[idx]) obj[h] = values[idx]; });
-      if (obj.lesson && obj.trad) data.push(obj);
-    }
-    localStorage.setItem('vocab_custom', JSON.stringify(data));
-    VOCAB.splice(0, VOCAB.length, ...data);
-    rebuildLessonGrid();
-    alert(data.length + '件 インポートしました。');
-    event.target.value = '';
-  };
-  reader.readAsText(file, 'UTF-8');
-}
-
-function rebuildLessonGrid() {
-  const counts = {};
-  VOCAB.forEach(v => { counts[v.lesson] = (counts[v.lesson] || 0) + 1; });
-  const grid = document.getElementById('lesson-grid');
-  grid.innerHTML = '';
-  Object.keys(counts).sort().forEach(lesson => {
-    const btn = document.createElement('button');
-    btn.className = 'lesson-btn';
-    const label = lesson === 'L00' ? '基礎' : lesson.replace('L', '第') + '課';
-    btn.innerHTML = label + '<span class="count">' + counts[lesson] + '語</span>';
-    btn.onclick = () => selectLesson(lesson);
-    btn.dataset.lesson = lesson;
-    grid.appendChild(btn);
-  });
-}
 
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
