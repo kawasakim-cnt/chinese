@@ -594,7 +594,7 @@ function showCard() {
     exEl.style.display = 'none';
   }
   const container = document.querySelector('.card-container');
-  container.style.height = card.ex_zh ? '440px' : '300px';
+  container.style.height = '300px';
   speak();
 }
 
@@ -603,6 +603,25 @@ function flipCard() {
     isFlipped = true;
     document.getElementById('card-inner').classList.add('flipped');
     document.getElementById('flip-hint').textContent = 'タップして次へ';
+
+    // card-back の自然な高さを計測してコンテナに適用
+    const container = document.querySelector('.card-container');
+    const cardBack = document.querySelector('.card-back');
+    const savedPosition = cardBack.style.position;
+    const savedHeight = cardBack.style.height;
+    const savedTransform = cardBack.style.transform;
+    const savedVisibility = cardBack.style.visibility;
+    cardBack.style.position = 'relative';
+    cardBack.style.height = 'auto';
+    cardBack.style.transform = 'none';
+    cardBack.style.visibility = 'hidden';
+    const backHeight = cardBack.offsetHeight;
+    cardBack.style.position = savedPosition;
+    cardBack.style.height = savedHeight;
+    cardBack.style.transform = savedTransform;
+    cardBack.style.visibility = savedVisibility;
+    container.style.height = Math.max(300, backHeight) + 'px';
+
     const card = cards[currentIndex];
     if (card.ex_zh) {
       const utter = new SpeechSynthesisUtterance(card.ex_zh);
