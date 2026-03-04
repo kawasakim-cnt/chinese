@@ -355,7 +355,7 @@
         <div class="card-ja" id="card-ja"></div>
         <div class="card-example" id="card-example"></div>
         <div class="card-pos-badge" id="card-pos-back"></div>
-        <button class="btn-speak" onclick="event.stopPropagation(); speak()">🔊</button>
+        <button class="btn-speak" onclick="event.stopPropagation(); speakExample()">🔊</button>
       </div>
     </div>
   </div>
@@ -624,6 +624,16 @@ function flipCard() {
 function speak() {
   const text = cards[currentIndex].trad;
   const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'zh-TW';
+  utter.rate = 0.8;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utter);
+}
+
+function speakExample() {
+  const card = cards[currentIndex];
+  if (!card.ex_zh) return;
+  const utter = new SpeechSynthesisUtterance(card.ex_zh);
   utter.lang = 'zh-TW';
   utter.rate = 0.8;
   speechSynthesis.cancel();
