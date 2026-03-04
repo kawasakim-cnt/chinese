@@ -206,6 +206,17 @@
     padding: 4px 12px;
   }
   .btn-speak:active { opacity: 1; }
+  .btn-speak-back {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.15s;
+    padding: 4px 12px;
+    margin-top: 6px;
+  }
+  .btn-speak-back:active { opacity: 1; }
 
   /* ===== ボタン群 ===== */
   .action-buttons {
@@ -357,7 +368,7 @@
         <div class="card-ja" id="card-ja"></div>
         <div class="card-example" id="card-example"></div>
         <div class="card-pos-badge" id="card-pos-back"></div>
-        <button class="btn-speak" onclick="event.stopPropagation(); speakExample()">🔊</button>
+        <button class="btn-speak-back" onclick="event.stopPropagation(); speakExample()">🔊</button>
       </div>
     </div>
   </div>
