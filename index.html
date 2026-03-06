@@ -150,11 +150,6 @@
     line-height: 1.1;
     text-align: center;
   }
-  .card-hint {
-    margin-top: 16px;
-    color: #a0aec0;
-    font-size: 14px;
-  }
   .card-pinyin {
     font-size: 26px;
     color: #2b6cb0;
@@ -250,11 +245,6 @@
     transition: all 0.15s;
   }
   .btn-correct:hover { background: #2c5282; }
-  .flip-hint {
-    text-align: center;
-    color: #a0aec0;
-    font-size: 13px;
-  }
   .action-buttons.hidden { opacity: 0; pointer-events: none; }
 
   /* ===== 結果画面 ===== */
@@ -451,7 +441,7 @@
       <div class="card-face card-front">
         <span class="card-lesson-badge" id="card-lesson"></span>
         <div class="card-chinese" id="card-chinese"></div>
-        <div class="card-hint">タップして答えを見る</div>
+
         <button class="btn-speak" onclick="event.stopPropagation(); speak()">🔊</button>
       </div>
       <div class="card-face card-back">
@@ -466,7 +456,7 @@
     </div>
   </div>
 
-  <div class="flip-hint" id="flip-hint">タップして答えを見る</div>
+
   <div style="display:flex; gap:10px; margin-top:16px;">
     <button class="btn-back" style="flex:1;" id="btn-back-category" onclick="goCategory()"></button>
     <button class="btn-back" style="flex:1;" onclick="goHome()">← メニュー</button>
@@ -1214,8 +1204,6 @@ function showCard() {
   cardInner.classList.remove('flipped');
   cardInner.offsetHeight; // reflow で即時反映
   cardInner.style.transition = '';
-  document.getElementById('flip-hint').textContent = 'タップして答えを見る';
-  document.getElementById('flip-hint').style.display = '';
 
   const total = cards.length;
   const done = currentIndex;
@@ -1256,7 +1244,6 @@ function flipCard() {
   if (!isFlipped) {
     isFlipped = true;
     document.getElementById('card-inner').classList.add('flipped');
-    document.getElementById('flip-hint').textContent = 'タップして次へ';
 
     // card-back の自然な高さを計測してコンテナに適用
     const container = document.querySelector('.card-container');
