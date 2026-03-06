@@ -436,7 +436,7 @@
   </div>
   <div class="progress-text" id="progress-text"></div>
 
-  <div class="card-container" onclick="flipCard()">
+  <div class="card-container" onclick="handleCardClick(event)">
     <div class="card-inner" id="card-inner">
       <div class="card-face card-front">
         <span class="card-lesson-badge" id="card-lesson"></span>
@@ -1250,6 +1250,21 @@ function showCard() {
   else btnCat.textContent = '← 課一覧';
 
   speak();
+}
+
+function handleCardClick(event) {
+  const rect = document.querySelector('.card-container').getBoundingClientRect();
+  if (event.clientX - rect.left < rect.width / 2) {
+    prevCard();
+  } else {
+    flipCard();
+  }
+}
+
+function prevCard() {
+  if (currentIndex <= 0) return;
+  currentIndex--;
+  showCard();
 }
 
 function flipCard() {
