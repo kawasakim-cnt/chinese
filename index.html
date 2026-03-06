@@ -147,7 +147,7 @@
     border-radius: 999px;
   }
   .card-chinese {
-    font-size: 72px;
+    font-size: 56px;
     font-weight: bold;
     color: #1a202c;
     line-height: 1.1;
@@ -386,6 +386,7 @@
     font-size: 22px;
     font-weight: bold;
     margin-top: 8px;
+    margin-bottom: 32px;
   }
 </style>
 </head>
@@ -418,14 +419,12 @@
 
 <!-- 品詞選択画面 -->
 <div id="screen-pos" class="screen">
-  <div class="screen-title">品詞を選んでください</div>
   <div class="pos-grid" id="pos-grid"></div>
   <button class="btn-back" onclick="showScreen('screen-home')">← 戻る</button>
 </div>
 
 <!-- 名詞トピック選択画面 -->
 <div id="screen-noun-topic" class="screen">
-  <div class="screen-title">名詞のカテゴリを選んでください</div>
   <div class="pos-grid" id="noun-topic-grid"></div>
   <button class="btn-back" onclick="showScreen('screen-pos')">← 品詞一覧に戻る</button>
 </div>
@@ -448,7 +447,7 @@
       <div class="card-face card-back">
         <span class="card-lesson-badge" id="card-lesson-back"></span>
         <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-          <div class="card-chinese" style="font-size:52px; text-align:left;" id="card-chinese-back"></div>
+          <div class="card-chinese" style="font-size:40px; text-align:left;" id="card-chinese-back"></div>
           <button class="btn-speak-back" onclick="event.stopPropagation(); speak()">🔊</button>
         </div>
         <div class="card-pinyin" style="text-align:left; width:100%;" id="card-pinyin"></div>

@@ -26,6 +26,9 @@
 - 単一ファイル構成を維持する（外部ファイルへの分割は行わない）
 - 音声は Web Speech API (`SpeechSynthesisUtterance`) を使用
 
+## ワークフロー
+- ユーザーが「OK」と書いたら、git commit & push を行う
+
 ## データ管理ルール
 - VOCABの単語の分類（topic）や訳（ja）、課（lesson）を変更した際は、必ず以下のファイルも更新すること：
   - `docs/vocab.xlsx` — 上記2つをシートにまとめたExcel（全件・課ごと・品詞ごと）
