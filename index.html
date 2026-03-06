@@ -115,7 +115,7 @@
   .card-back {
     background: #ebf8ff;
     transform: rotateY(180deg);
-    align-items: flex-start;
+    align-items: stretch;
     justify-content: flex-start;
     padding: 44px 24px 24px 24px;
   }
@@ -449,15 +449,15 @@
       </div>
       <div class="card-face card-back">
         <span class="card-lesson-badge" id="card-lesson-back"></span>
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px; width:100%;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
           <div class="card-chinese" style="font-size:52px; text-align:left;" id="card-chinese-back"></div>
           <button class="btn-speak-back" onclick="event.stopPropagation(); speak()">🔊</button>
         </div>
-        <div class="card-pinyin" style="text-align:left;" id="card-pinyin"></div>
-        <div class="card-ja" id="card-ja"></div>
+        <div class="card-pinyin" style="text-align:left; width:100%;" id="card-pinyin"></div>
+        <div class="card-ja" style="width:100%;" id="card-ja"></div>
         <div class="card-example" id="card-example"></div>
-        <div class="card-pos-badge" id="card-pos-back"></div>
-        <button class="btn-speak-back" onclick="event.stopPropagation(); speakExample()">🔊</button>
+        <div class="card-pos-badge" style="align-self:flex-start;" id="card-pos-back"></div>
+        <button class="btn-speak-back" style="align-self:flex-start;" onclick="event.stopPropagation(); speakExample()">🔊</button>
       </div>
     </div>
   </div>
