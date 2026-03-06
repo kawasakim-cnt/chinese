@@ -115,6 +115,8 @@
   .card-back {
     background: #ebf8ff;
     transform: rotateY(180deg);
+    align-items: flex-start;
+    justify-content: flex-start;
   }
   .card-lesson-badge {
     position: absolute;
@@ -160,7 +162,7 @@
   .card-ja {
     font-size: 22px;
     color: #2d3748;
-    text-align: center;
+    text-align: left;
     line-height: 1.5;
   }
   .card-example {
@@ -446,11 +448,11 @@
       </div>
       <div class="card-face card-back">
         <span class="card-lesson-badge" id="card-lesson-back"></span>
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-          <div class="card-chinese" style="font-size:52px;" id="card-chinese-back"></div>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px; margin-top:20px; width:100%;">
+          <div class="card-chinese" style="font-size:52px; text-align:left;" id="card-chinese-back"></div>
           <button class="btn-speak-back" onclick="event.stopPropagation(); speak()">🔊</button>
         </div>
-        <div class="card-pinyin" id="card-pinyin"></div>
+        <div class="card-pinyin" style="text-align:left;" id="card-pinyin"></div>
         <div class="card-ja" id="card-ja"></div>
         <div class="card-example" id="card-example"></div>
         <div class="card-pos-badge" id="card-pos-back"></div>
