@@ -1731,16 +1731,77 @@ function showListenCard() {
   listenSpeak();
 }
 
-function generateListenChoices(card) {
-  // 同じ課から、意味が異なる単語を間違い選択肢候補として取得
-  let pool = VOCAB.filter(v => v.lesson === card.lesson && v.trad !== card.trad && v.ja !== card.ja);
-  if (pool.length < 3) {
-    const existingTrad = new Set([card.trad, ...pool.map(p => p.trad)]);
-    const existingJa = new Set([card.ja, ...pool.map(p => p.ja)]);
-    const extra = VOCAB.filter(v => !existingTrad.has(v.trad) && !existingJa.has(v.ja));
-    pool = [...pool, ...shuffle([...extra])];
+// ===== ピンイン解析ヘルパー =====
+// 声調記号を除いた読みを返す（例: "māo" → "mao"、"wǒmen" → "women"）
+function removeTones(str) {
+  return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+// ピンインの最初の音節ベース（スペース・括弧以降を除去）
+function getPinyinBase(pinyin) {
+  return pinyin.split(/[\s(]/)[0].toLowerCase();
+}
+
+// 声母（子音）を返す（例: "māo" → "m"、"zhōng" → "zh"）
+const INITIALS = ['zh','ch','sh','b','p','m','f','d','t','n','l','g','k','h','j','q','x','r','z','c','s','y','w'];
+function getInitial(pinyin) {
+  const base = removeTones(getPinyinBase(pinyin));
+  for (const init of INITIALS) {
+    if (base.startsWith(init)) return init;
   }
-  const wrong = shuffle(pool).slice(0, 3);
+  return '';
+}
+
+// 韻母（母音部分）を返す（例: "māo" → "ao"、"zhōng" → "ong"）
+function getFinal(pinyin) {
+  const base = removeTones(getPinyinBase(pinyin));
+  for (const init of INITIALS) {
+    if (base.startsWith(init)) return base.slice(init.length);
+  }
+  return base;
+}
+
+function generateListenChoices(card) {
+  const targetBase    = removeTones(getPinyinBase(card.pinyin));
+  const targetInitial = getInitial(card.pinyin);
+  const targetFinal   = getFinal(card.pinyin);
+
+  // 正解・同じ意味の単語を除外した全候補
+  const candidates = VOCAB.filter(v => v.trad !== card.trad && v.ja !== card.ja);
+
+  const chosen = new Set();
+  const wrong  = [];
+
+  function tryAdd(v) {
+    if (wrong.length >= 3 || chosen.has(v.trad)) return;
+    chosen.add(v.trad);
+    wrong.push(v);
+  }
+
+  // 優先1: 声調だけ違う（ピンインの読みが同じ）
+  shuffle(candidates.filter(v =>
+    removeTones(getPinyinBase(v.pinyin)) === targetBase
+  )).forEach(tryAdd);
+
+  // 優先2a: 声母（子音）が同じ
+  if (wrong.length < 3) {
+    shuffle(candidates.filter(v =>
+      !chosen.has(v.trad) && getInitial(v.pinyin) === targetInitial
+    )).forEach(tryAdd);
+  }
+
+  // 優先2b: 韻母（母音）が同じ
+  if (wrong.length < 3 && targetFinal !== '') {
+    shuffle(candidates.filter(v =>
+      !chosen.has(v.trad) && getFinal(v.pinyin) === targetFinal
+    )).forEach(tryAdd);
+  }
+
+  // 優先3: ランダム補完
+  if (wrong.length < 3) {
+    shuffle(candidates.filter(v => !chosen.has(v.trad))).forEach(tryAdd);
+  }
+
   return shuffle([card, ...wrong]);
 }
 
