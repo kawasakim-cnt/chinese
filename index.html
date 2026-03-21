@@ -451,7 +451,9 @@
     transition: border-color 0.15s, background 0.15s;
     color: #2d3748;
   }
-  .listen-choice:hover:not(.disabled) { border-color: #90cdf4; background: #ebf8ff; }
+  @media (hover: hover) {
+    .listen-choice:hover:not(.disabled) { border-color: #90cdf4; background: #ebf8ff; }
+  }
   .listen-choice.correct { background: #c6f6d5; border-color: #38a169; color: #22543d; font-weight: bold; }
   .listen-choice.wrong { background: #fed7d7; border-color: #fc8181; color: #742a2a; }
   .listen-choice.disabled { cursor: default; pointer-events: none; }
@@ -1774,21 +1776,8 @@ function generateListenChoices(card) {
   const targetInitial = getInitial(card.pinyin);
   const targetFinal   = getFinal(card.pinyin);
 
-  // currentSourceに応じて選択肢の優先プールを決定
-  let pool;
-  if (currentSource === 'pos') {
-    const group = POS_GROUPS.find(g => g.pos.includes(card.pos));
-    pool = group ? VOCAB.filter(v => group.pos.includes(v.pos)) : VOCAB;
-  } else if (currentSource === 'noun-topic') {
-    pool = VOCAB.filter(v => v.topic === card.topic);
-  } else {
-    // 'lesson': 同じ課から
-    pool = VOCAB.filter(v => v.lesson === card.lesson);
-  }
-
   const exclude = v => v.trad !== card.trad && v.ja !== card.ja;
-  const poolCandidates = pool.filter(exclude);
-  const allCandidates  = VOCAB.filter(exclude);
+  const allCandidates = VOCAB.filter(exclude);
 
   const chosen = new Set();
   const wrong  = [];
@@ -1799,33 +1788,73 @@ function generateListenChoices(card) {
     wrong.push(v);
   }
 
-  // 優先1: グループ内で声調だけ違う
-  shuffle(poolCandidates.filter(v =>
-    removeTones(getPinyinBase(v.pinyin)) === targetBase
-  )).forEach(tryAdd);
+  if (currentSource === 'lesson') {
+    // 課別モード: 全単語から発音が紛らわしい選択肢を優先度順に選ぶ
 
-  // 優先2a: グループ内で声母（子音）が同じ
-  if (wrong.length < 3) {
-    shuffle(poolCandidates.filter(v =>
-      !chosen.has(v.trad) && getInitial(v.pinyin) === targetInitial
+    // 優先1: 声調だけ違う（ピンインのベースが同じ）
+    shuffle(allCandidates.filter(v =>
+      removeTones(getPinyinBase(v.pinyin)) === targetBase
     )).forEach(tryAdd);
-  }
 
-  // 優先2b: グループ内で韻母（母音）が同じ
-  if (wrong.length < 3 && targetFinal !== '') {
+    // 優先2: 声母（最初の子音）が同じ
+    if (wrong.length < 3) {
+      shuffle(allCandidates.filter(v =>
+        !chosen.has(v.trad) && getInitial(v.pinyin) === targetInitial
+      )).forEach(tryAdd);
+    }
+
+    // 優先3: 韻母（母音部分）が似ている
+    if (wrong.length < 3 && targetFinal !== '') {
+      shuffle(allCandidates.filter(v =>
+        !chosen.has(v.trad) && getFinal(v.pinyin) === targetFinal
+      )).forEach(tryAdd);
+    }
+
+    // 優先4: 全単語からランダムで補完
+    if (wrong.length < 3) {
+      shuffle(allCandidates.filter(v => !chosen.has(v.trad))).forEach(tryAdd);
+    }
+  } else {
+    // 品詞別・トピック別モード: グループ内から選択肢を選ぶ（従来通り）
+    let pool;
+    if (currentSource === 'pos') {
+      const group = POS_GROUPS.find(g => g.pos.includes(card.pos));
+      pool = group ? VOCAB.filter(v => group.pos.includes(v.pos)) : VOCAB;
+    } else {
+      // noun-topic
+      pool = VOCAB.filter(v => v.topic === card.topic);
+    }
+
+    const poolCandidates = pool.filter(exclude);
+
+    // 優先1: グループ内で声調だけ違う
     shuffle(poolCandidates.filter(v =>
-      !chosen.has(v.trad) && getFinal(v.pinyin) === targetFinal
+      removeTones(getPinyinBase(v.pinyin)) === targetBase
     )).forEach(tryAdd);
-  }
 
-  // 優先3: グループ内からランダム
-  if (wrong.length < 3) {
-    shuffle(poolCandidates.filter(v => !chosen.has(v.trad))).forEach(tryAdd);
-  }
+    // 優先2a: グループ内で声母（子音）が同じ
+    if (wrong.length < 3) {
+      shuffle(poolCandidates.filter(v =>
+        !chosen.has(v.trad) && getInitial(v.pinyin) === targetInitial
+      )).forEach(tryAdd);
+    }
 
-  // 優先4: 全単語からランダムで補完
-  if (wrong.length < 3) {
-    shuffle(allCandidates.filter(v => !chosen.has(v.trad))).forEach(tryAdd);
+    // 優先2b: グループ内で韻母（母音）が同じ
+    if (wrong.length < 3 && targetFinal !== '') {
+      shuffle(poolCandidates.filter(v =>
+        !chosen.has(v.trad) && getFinal(v.pinyin) === targetFinal
+      )).forEach(tryAdd);
+    }
+
+    // 優先3: グループ内からランダム
+    if (wrong.length < 3) {
+      shuffle(poolCandidates.filter(v => !chosen.has(v.trad))).forEach(tryAdd);
+    }
+
+    // 優先4: 全単語からランダムで補完
+    if (wrong.length < 3) {
+      shuffle(allCandidates.filter(v => !chosen.has(v.trad))).forEach(tryAdd);
+    }
   }
 
   return shuffle([card, ...wrong]);
