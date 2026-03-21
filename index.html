@@ -617,7 +617,7 @@
 </div>
 
 <!-- リスニング画面 -->
-<div id="screen-listen" class="screen">
+<div id="screen-listen" class="screen" onclick="handleListenAreaClick(event)">
   <div class="progress-bar-wrap">
     <div class="progress-bar" id="listen-progress-bar"></div>
   </div>
@@ -649,7 +649,6 @@
   </div>
 
   <div style="display:flex; gap:10px; margin-top:8px;">
-    <button class="btn-back" id="listen-prev-btn" style="display:none;" onclick="listenPrev()">← 前へ</button>
     <button class="btn-back" style="flex:1;" id="listen-back-category" onclick="goCategory()">← 課一覧</button>
     <button class="btn-back" style="flex:1;" onclick="goHome()">← メニュー</button>
   </div>
@@ -1722,9 +1721,6 @@ function showListenCard() {
     choicesEl.appendChild(btn);
   });
 
-  // 前へボタンの表示制御
-  document.getElementById('listen-prev-btn').style.display = currentIndex > 0 ? 'block' : 'none';
-
   // 戻るボタンテキスト更新
   const btnCat = document.getElementById('listen-back-category');
   if (currentSource === 'noun-topic') btnCat.textContent = '← カテゴリ一覧';
@@ -1830,6 +1826,15 @@ function listenPrev() {
   if (currentIndex <= 0) return;
   currentIndex--;
   showListenCard();
+}
+
+function handleListenAreaClick(event) {
+  // ボタンのクリックは無視
+  if (event.target.closest('button')) return;
+  const rect = event.currentTarget.getBoundingClientRect();
+  if (event.clientX - rect.left < rect.width / 2) {
+    listenPrev();
+  }
 }
 </script>
 </body>
