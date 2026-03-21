@@ -1691,6 +1691,7 @@ function showScreen(id) {
 let studyMode = 'flash'; // 'flash' | 'listen'
 let currentMode = 'flash';
 let listenCurrentCard = null;
+let listenSpeakTimer = null;
 
 function setStudyMode(mode) {
   studyMode = mode;
@@ -1736,6 +1737,9 @@ function showListenCard() {
   if (currentSource === 'noun-topic') btnCat.textContent = '← カテゴリ一覧';
   else if (currentSource === 'pos') btnCat.textContent = '← 品詞一覧';
   else btnCat.textContent = '← 課一覧';
+
+  // 前カードの遅延再生をキャンセル
+  if (listenSpeakTimer) { clearTimeout(listenSpeakTimer); listenSpeakTimer = null; }
 
   // 自動再生
   listenSpeak();
@@ -1888,7 +1892,8 @@ function checkListenAnswer(isCorrect, clickedBtn) {
     msgEl.textContent = '✓ 正解！';
     msgEl.className = 'listen-answer-msg correct';
     // 例文を少し遅れて再生
-    setTimeout(() => {
+    listenSpeakTimer = setTimeout(() => {
+      listenSpeakTimer = null;
       if (listenCurrentCard.ex_zh) listenSpeakExample();
     }, 600);
   } else {
