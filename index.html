@@ -493,6 +493,13 @@
     text-align: center;
     margin-bottom: 12px;
   }
+  .listen-answer-card {
+    background: white;
+    border-radius: 16px;
+    padding: 16px 20px;
+    margin: 12px 0;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
   .listen-result-example { border-top: 1px solid #e2e8f0; padding-top: 12px; }
   .listen-ex-speak {
     display: flex;
@@ -616,26 +623,30 @@
   </div>
   <div class="progress-text" id="listen-progress-text"></div>
 
-  <div class="listen-speak-wrap">
-    <button class="listen-speak-btn" onclick="listenSpeak()">🔊</button>
-  </div>
-  <div class="listen-question">この単語の日本語の意味は？</div>
-
-  <div class="listen-choices" id="listen-choices"></div>
-
-  <div class="listen-result" id="listen-result">
-    <div class="listen-answer-msg" id="listen-answer-msg"></div>
-    <div class="listen-result-chinese" id="listen-result-chinese"></div>
-    <div class="listen-result-pinyin" id="listen-result-pinyin"></div>
-    <div class="listen-result-ja" id="listen-result-ja"></div>
-    <div class="listen-result-example" id="listen-result-example"></div>
-    <div class="listen-ex-speak" id="listen-ex-speak">
-      <button class="listen-ex-speak-btn" onclick="listenSpeakExample()">🔊</button>
-      <span style="font-size:13px; color:#718096;">例文を再生</span>
+  <!-- 問題面 -->
+  <div id="listen-question-view">
+    <div class="listen-speak-wrap">
+      <button class="listen-speak-btn" onclick="listenSpeak()">🔊</button>
     </div>
+    <div class="listen-question">この単語の日本語の意味は？</div>
+    <div class="listen-choices" id="listen-choices"></div>
   </div>
 
-  <button class="btn-retry" id="listen-next-btn" style="display:none; margin-bottom:12px;" onclick="listenNext()">次へ →</button>
+  <!-- 答え面 -->
+  <div id="listen-answer-view" style="display:none;">
+    <div class="listen-answer-msg" id="listen-answer-msg"></div>
+    <div class="listen-answer-card">
+      <div class="listen-result-chinese" id="listen-result-chinese"></div>
+      <div class="listen-result-pinyin" id="listen-result-pinyin"></div>
+      <div class="listen-result-ja" id="listen-result-ja"></div>
+      <div class="listen-result-example" id="listen-result-example"></div>
+      <div class="listen-ex-speak" id="listen-ex-speak">
+        <button class="listen-ex-speak-btn" onclick="listenSpeakExample()">🔊</button>
+        <span style="font-size:13px; color:#718096;">例文を再生</span>
+      </div>
+    </div>
+    <button class="btn-retry" onclick="listenNext()" style="margin-bottom:12px;">次へ →</button>
+  </div>
 
   <div style="display:flex; gap:10px; margin-top:8px;">
     <button class="btn-back" style="flex:1;" id="listen-back-category" onclick="goCategory()">← 課一覧</button>
@@ -1693,9 +1704,9 @@ function showListenCard() {
   document.getElementById('listen-progress-bar').style.width = (currentIndex / total * 100) + '%';
   document.getElementById('listen-progress-text').textContent = `${currentIndex + 1} / ${total}`;
 
-  // リセット
-  document.getElementById('listen-result').classList.remove('show');
-  document.getElementById('listen-next-btn').style.display = 'none';
+  // 問題面を表示、答え面を非表示
+  document.getElementById('listen-question-view').style.display = 'block';
+  document.getElementById('listen-answer-view').style.display = 'none';
 
   // 選択肢生成
   const choices = generateListenChoices(listenCurrentCard);
@@ -1797,8 +1808,9 @@ function checkListenAnswer(isCorrect, clickedBtn) {
     exSpeakEl.style.display = 'none';
   }
 
-  document.getElementById('listen-result').classList.add('show');
-  document.getElementById('listen-next-btn').style.display = 'block';
+  // 問題面を非表示、答え面を表示
+  document.getElementById('listen-question-view').style.display = 'none';
+  document.getElementById('listen-answer-view').style.display = 'block';
 }
 
 function listenNext() {
