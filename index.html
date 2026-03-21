@@ -388,6 +388,128 @@
     margin-top: 8px;
     margin-bottom: 32px;
   }
+
+  /* ===== モード切替タブ ===== */
+  .mode-tabs {
+    display: flex;
+    margin-bottom: 16px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid #2b6cb0;
+  }
+  .mode-tab {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    background: white;
+    color: #2b6cb0;
+    transition: all 0.15s;
+  }
+  .mode-tab.active { background: #2b6cb0; color: white; }
+
+  /* ===== リスニング画面 ===== */
+  .listen-speak-wrap {
+    text-align: center;
+    margin: 16px 0 8px;
+  }
+  .listen-speak-btn {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: #2b6cb0;
+    color: white;
+    font-size: 32px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(43,108,176,0.35);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .listen-speak-btn:active { transform: scale(0.93); box-shadow: none; }
+  .listen-question {
+    font-size: 15px;
+    color: #718096;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .listen-choices {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .listen-choice {
+    padding: 15px 18px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    background: white;
+    font-size: 15px;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.15s, background 0.15s;
+    color: #2d3748;
+  }
+  .listen-choice:hover:not(.disabled) { border-color: #90cdf4; background: #ebf8ff; }
+  .listen-choice.correct { background: #c6f6d5; border-color: #38a169; color: #22543d; font-weight: bold; }
+  .listen-choice.wrong { background: #fed7d7; border-color: #fc8181; color: #742a2a; }
+  .listen-choice.disabled { cursor: default; pointer-events: none; }
+  .listen-result {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    display: none;
+  }
+  .listen-result.show { display: block; }
+  .listen-answer-msg {
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    padding: 6px 12px;
+    border-radius: 8px;
+  }
+  .listen-answer-msg.correct { background: #c6f6d5; color: #276749; }
+  .listen-answer-msg.wrong { background: #fed7d7; color: #c53030; }
+  .listen-result-chinese {
+    font-size: 48px;
+    font-weight: bold;
+    color: #1a202c;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .listen-result-pinyin {
+    font-size: 20px;
+    color: #2b6cb0;
+    text-align: center;
+    margin: 4px 0 8px;
+  }
+  .listen-result-ja {
+    font-size: 16px;
+    color: #4a5568;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .listen-result-example { border-top: 1px solid #e2e8f0; padding-top: 12px; }
+  .listen-ex-speak {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .listen-ex-speak-btn {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.15s;
+    padding: 2px 6px;
+  }
+  .listen-ex-speak-btn:active { opacity: 1; }
 </style>
 </head>
 <body>
@@ -412,6 +534,10 @@
 
 <!-- 課選択画面 -->
 <div id="screen-select" class="screen">
+  <div class="mode-tabs">
+    <button class="mode-tab active" data-mode="flash" onclick="setStudyMode('flash')">📖 フラッシュカード</button>
+    <button class="mode-tab" data-mode="listen" onclick="setStudyMode('listen')">🎧 リスニング</button>
+  </div>
   <div class="screen-title">課を選んでください</div>
   <div class="lesson-grid" id="lesson-grid"></div>
   <button class="btn-back" onclick="showScreen('screen-home')">← 戻る</button>
@@ -419,12 +545,20 @@
 
 <!-- 品詞選択画面 -->
 <div id="screen-pos" class="screen">
+  <div class="mode-tabs">
+    <button class="mode-tab active" data-mode="flash" onclick="setStudyMode('flash')">📖 フラッシュカード</button>
+    <button class="mode-tab" data-mode="listen" onclick="setStudyMode('listen')">🎧 リスニング</button>
+  </div>
   <div class="pos-grid" id="pos-grid"></div>
   <button class="btn-back" onclick="showScreen('screen-home')">← 戻る</button>
 </div>
 
 <!-- 名詞トピック選択画面 -->
 <div id="screen-noun-topic" class="screen">
+  <div class="mode-tabs">
+    <button class="mode-tab active" data-mode="flash" onclick="setStudyMode('flash')">📖 フラッシュカード</button>
+    <button class="mode-tab" data-mode="listen" onclick="setStudyMode('listen')">🎧 リスニング</button>
+  </div>
   <div class="pos-grid" id="noun-topic-grid"></div>
   <button class="btn-back" onclick="showScreen('screen-pos')">← 品詞一覧に戻る</button>
 </div>
@@ -472,6 +606,40 @@
   <div class="result-buttons">
     <button class="btn-retry" onclick="retryAll()">もう一度</button>
     <button class="btn-back" style="margin-top:12px;" onclick="goHome()">← メニューに戻る</button>
+  </div>
+</div>
+
+<!-- リスニング画面 -->
+<div id="screen-listen" class="screen">
+  <div class="progress-bar-wrap">
+    <div class="progress-bar" id="listen-progress-bar"></div>
+  </div>
+  <div class="progress-text" id="listen-progress-text"></div>
+
+  <div class="listen-speak-wrap">
+    <button class="listen-speak-btn" onclick="listenSpeak()">🔊</button>
+  </div>
+  <div class="listen-question">この単語の日本語の意味は？</div>
+
+  <div class="listen-choices" id="listen-choices"></div>
+
+  <div class="listen-result" id="listen-result">
+    <div class="listen-answer-msg" id="listen-answer-msg"></div>
+    <div class="listen-result-chinese" id="listen-result-chinese"></div>
+    <div class="listen-result-pinyin" id="listen-result-pinyin"></div>
+    <div class="listen-result-ja" id="listen-result-ja"></div>
+    <div class="listen-result-example" id="listen-result-example"></div>
+    <div class="listen-ex-speak" id="listen-ex-speak">
+      <button class="listen-ex-speak-btn" onclick="listenSpeakExample()">🔊</button>
+      <span style="font-size:13px; color:#718096;">例文を再生</span>
+    </div>
+  </div>
+
+  <button class="btn-retry" id="listen-next-btn" style="display:none; margin-bottom:12px;" onclick="listenNext()">次へ →</button>
+
+  <div style="display:flex; gap:10px; margin-top:8px;">
+    <button class="btn-back" style="flex:1;" id="listen-back-category" onclick="goCategory()">← 課一覧</button>
+    <button class="btn-back" style="flex:1;" onclick="goHome()">← メニュー</button>
   </div>
 </div>
 
@@ -1260,7 +1428,8 @@ function selectLesson(lesson) {
   selectedLessons.clear();
   selectedLessons.add(lesson);
   currentSource = 'lesson';
-  startStudy(false);
+  originalCards = VOCAB.filter(v => selectedLessons.has(v.lesson));
+  studyMode === 'listen' ? startListening() : startStudy();
 }
 
 // ===== 学習ロジック =====
@@ -1276,7 +1445,7 @@ function shuffle(arr) {
 }
 
 function startStudy() {
-  originalCards = VOCAB.filter(v => selectedLessons.has(v.lesson));
+  currentMode = 'flash';
   cards = shuffle([...originalCards]);
   currentIndex = 0;
   showScreen('screen-card');
@@ -1405,8 +1574,13 @@ function speakExample() {
 function retryAll() {
   cards = shuffle([...originalCards]);
   currentIndex = 0;
-  showScreen('screen-card');
-  showCard();
+  if (currentMode === 'listen') {
+    showScreen('screen-listen');
+    showListenCard();
+  } else {
+    showScreen('screen-card');
+    showCard();
+  }
 }
 function goHome() { showScreen('screen-home'); }
 function goCategory() {
@@ -1475,25 +1649,165 @@ NOUN_TOPICS.forEach(t => {
 
 function selectNounTopic(t) {
   originalCards = VOCAB.filter(v => nounPos.includes(v.pos) && v.topic === t.topic);
-  cards = shuffle([...originalCards]);
   currentIndex = 0;
   currentSource = 'noun-topic';
-  showScreen('screen-card');
-  showCard();
+  studyMode === 'listen' ? startListening() : startStudy();
 }
 
 function selectPos(group) {
   originalCards = VOCAB.filter(v => group.pos.includes(v.pos));
-  cards = shuffle([...originalCards]);
   currentIndex = 0;
   currentSource = 'pos';
-  showScreen('screen-card');
-  showCard();
+  studyMode === 'listen' ? startListening() : startStudy();
 }
 
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+}
+
+// ===== 学習モード =====
+let studyMode = 'flash'; // 'flash' | 'listen'
+let currentMode = 'flash';
+let listenCurrentCard = null;
+
+function setStudyMode(mode) {
+  studyMode = mode;
+  document.querySelectorAll('.mode-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.mode === mode);
+  });
+}
+
+// ===== リスニングモード =====
+function startListening() {
+  currentMode = 'listen';
+  cards = shuffle([...originalCards]);
+  currentIndex = 0;
+  showScreen('screen-listen');
+  showListenCard();
+}
+
+function showListenCard() {
+  listenCurrentCard = cards[currentIndex];
+  const total = cards.length;
+  document.getElementById('listen-progress-bar').style.width = (currentIndex / total * 100) + '%';
+  document.getElementById('listen-progress-text').textContent = `${currentIndex + 1} / ${total}`;
+
+  // リセット
+  document.getElementById('listen-result').classList.remove('show');
+  document.getElementById('listen-next-btn').style.display = 'none';
+
+  // 選択肢生成
+  const choices = generateListenChoices(listenCurrentCard);
+  const choicesEl = document.getElementById('listen-choices');
+  choicesEl.innerHTML = '';
+  choices.forEach(choice => {
+    const btn = document.createElement('button');
+    btn.className = 'listen-choice';
+    btn.textContent = choice.ja;
+    btn.dataset.trad = choice.trad;
+    btn.onclick = () => checkListenAnswer(choice.trad === listenCurrentCard.trad, btn);
+    choicesEl.appendChild(btn);
+  });
+
+  // 戻るボタンテキスト更新
+  const btnCat = document.getElementById('listen-back-category');
+  if (currentSource === 'noun-topic') btnCat.textContent = '← カテゴリ一覧';
+  else if (currentSource === 'pos') btnCat.textContent = '← 品詞一覧';
+  else btnCat.textContent = '← 課一覧';
+
+  // 自動再生
+  listenSpeak();
+}
+
+function generateListenChoices(card) {
+  // 同じ課から、意味が異なる単語を間違い選択肢候補として取得
+  let pool = VOCAB.filter(v => v.lesson === card.lesson && v.trad !== card.trad && v.ja !== card.ja);
+  if (pool.length < 3) {
+    const existingTrad = new Set([card.trad, ...pool.map(p => p.trad)]);
+    const existingJa = new Set([card.ja, ...pool.map(p => p.ja)]);
+    const extra = VOCAB.filter(v => !existingTrad.has(v.trad) && !existingJa.has(v.ja));
+    pool = [...pool, ...shuffle([...extra])];
+  }
+  const wrong = shuffle(pool).slice(0, 3);
+  return shuffle([card, ...wrong]);
+}
+
+function listenSpeak() {
+  if (!listenCurrentCard) return;
+  const utter = new SpeechSynthesisUtterance(listenCurrentCard.trad);
+  utter.lang = 'zh-TW';
+  utter.rate = 0.8;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utter);
+}
+
+function listenSpeakExample() {
+  if (!listenCurrentCard || !listenCurrentCard.ex_zh) return;
+  const utter = new SpeechSynthesisUtterance(listenCurrentCard.ex_zh);
+  utter.lang = 'zh-TW';
+  utter.rate = 0.8;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utter);
+}
+
+function checkListenAnswer(isCorrect, clickedBtn) {
+  // 全ボタン無効化
+  document.querySelectorAll('.listen-choice').forEach(b => b.classList.add('disabled'));
+
+  const msgEl = document.getElementById('listen-answer-msg');
+  if (isCorrect) {
+    clickedBtn.classList.add('correct');
+    msgEl.textContent = '✓ 正解！';
+    msgEl.className = 'listen-answer-msg correct';
+    // 例文を少し遅れて再生
+    setTimeout(() => {
+      if (listenCurrentCard.ex_zh) listenSpeakExample();
+    }, 600);
+  } else {
+    clickedBtn.classList.add('wrong');
+    // 正解ボタンをハイライト
+    document.querySelectorAll('.listen-choice').forEach(b => {
+      if (b.dataset.trad === listenCurrentCard.trad) b.classList.add('correct');
+    });
+    msgEl.textContent = '✗ 不正解 — もう一度聴いてみよう';
+    msgEl.className = 'listen-answer-msg wrong';
+    // 単語音声を再再生
+    setTimeout(() => listenSpeak(), 600);
+  }
+
+  // 結果カード表示
+  const card = listenCurrentCard;
+  document.getElementById('listen-result-chinese').textContent = card.trad;
+  document.getElementById('listen-result-pinyin').textContent = card.pinyin;
+  document.getElementById('listen-result-ja').textContent = card.ja;
+
+  const exEl = document.getElementById('listen-result-example');
+  const exSpeakEl = document.getElementById('listen-ex-speak');
+  if (card.ex_zh) {
+    exEl.innerHTML =
+      `<div class="ex-zh">${card.ex_zh}</div>` +
+      `<div class="ex-py">${card.ex_py}</div>` +
+      `<div class="ex-ja">${card.ex_ja}</div>`;
+    exEl.style.display = 'block';
+    exSpeakEl.style.display = 'flex';
+  } else {
+    exEl.innerHTML = '';
+    exEl.style.display = 'none';
+    exSpeakEl.style.display = 'none';
+  }
+
+  document.getElementById('listen-result').classList.add('show');
+  document.getElementById('listen-next-btn').style.display = 'block';
+}
+
+function listenNext() {
+  currentIndex++;
+  if (currentIndex >= cards.length) {
+    showScreen('screen-result');
+  } else {
+    showListenCard();
+  }
 }
 </script>
 </body>
