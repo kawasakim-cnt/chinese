@@ -1780,6 +1780,7 @@ function generateListenChoices(card) {
   const targetInitial = getInitial(card.pinyin);
   const targetFinal   = getFinal(card.pinyin);
 
+  // tradが同じ（同字異義）またはjaが同じ単語を除外
   const exclude = v => v.trad !== card.trad && v.ja !== card.ja;
   const allCandidates = VOCAB.filter(exclude);
 
